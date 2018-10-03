@@ -41,7 +41,7 @@ func getAccessKeys(user string) []*iam.AccessKeyMetadata {
 	})
 
 	if err != nil {
-		fmt.Println("Error", err)
+		return err
 	}
 
 	return (result.AccessKeyMetadata)
@@ -73,35 +73,35 @@ func sendSmtpEmail(server string, port string, password string, mail Mail) strin
 
 	c, err := smtp.Dial(smtpServer.ServerName())
 	if err != nil {
-		return ("Error")
+		return err
 	}
 
 	c.StartTLS(tlsConfig)
 
 	if err = c.Auth(auth); err != nil {
-		return ("Error")
+		return err
 	}
 
 	if err = c.Mail(m.senderId); err != nil {
-		return ("Error")
+		return err
 	}
 
 	if err = c.Rcpt(m.toId); err != nil {
-		return ("Error")
+		return err
 	}
 
 	wc, err := c.Data()
 	if err != nil {
-		return ("Error")
+		return err
 	}
 
 	if _, err = wc.Write([]byte(messageBody)); err != nil {
-		return ("Error")
+		return err
 	}
 
 	err = wc.Close()
 	if err != nil {
-		return ("Error")
+		return err
 	}
 
 	c.Quit()
