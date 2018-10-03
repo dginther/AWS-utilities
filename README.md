@@ -1,6 +1,6 @@
 # AWS-utilities
 
-iam-rotation-check/
+## iam-rotation-check/
 
 Language: Golang
 AWS best practices say to rotate your keys every 90 days.
