@@ -12,3 +12,14 @@ usage:
 iam-rotation-check -user USERNAME -sender you@example.com -rcpt RECIPIENT 
                    -smtpServer smtp.gmail.com -smtpPort 587 -smtpPassword PASSWORD
 ```
+
+
+arguments:
+```
+-user USERNAME          AWS Username to check IAM Access Keys for.
+-sender EMAIL           Email address for sender (SMTP server username)
+-rcpt EMAIL             Email address for the recipient (User of AWS account)
+-smtpServer SERVER      SMTP server hostname
+-smtpPort PORT          SMTP port
+-smtpPassword PASSWORD  SMTP password
+```
