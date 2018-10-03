@@ -117,7 +117,7 @@ func main() {
 	smtpServerPtr := flag.String("smtpServer", "smtp.gmail.com", "SMTP Server")
 	smtpPortPtr := flag.String("smtpPort", "587", "SMTP Port")
 	smtpPassword := flag.String("smtpPassword", "", "SMTP Password")
-	send := flag.Bool("send", true, "Send Email")
+	sendPtr := flag.Bool("send", true, "Send Email")
 	flag.Parse()
 
 	rotationScriptURL := "https://github.com/605data/aws_scripts/blob/master/aws-iam-rotate-keys.sh"
@@ -146,10 +146,14 @@ func main() {
 			mail.body += "Please rotate your access keys. You can use the script located at\n" +
 				rotationScriptURL +
 				"\n\nThank you for doing your part to keep our accounts more secure!\n"
-			if err := sendSmtpEmail(*smtpServerPtr, *smtpPortPtr, *smtpPassword, mail); err != nil {
-				fmt.Println("Error sending email: ", err)
+			if *sendPtr == true {
+				if err := sendSmtpEmail(*smtpServerPtr, *smtpPortPtr, *smtpPassword, mail); err != nil {
+					fmt.Println("Error sending email:", err)
+				} else {
+				  fmt.Println("Success: Sent email to", *rcptPtr)
+				}
 			} else {
-			  fmt.Println("Success: Sent email to ", *rcptPtr)
+				fmt.Println("No email sent.", *rcptPtr, "access keys were", diff/24, "days old.")
 			}
 		}
 	}
