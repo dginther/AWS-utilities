@@ -135,26 +135,26 @@ func main() {
 		diff := checkCreateDate(*result[date].CreateDate)
 		// 90 days = 2160 Hours
 		// 85 Days = 2040 Hours
-		if hours := diff.Hours(); hours >= 2040 {
-			if hours >= 2160 {
-				mail.subject = "Your IAM Access Keys are at least 90 days old."
-				mail.body = "Hello, your IAM Access Keys are at least 90 days old.\n\n"
-			} else {
-				mail.subject = "Your IAM Access Keys are nearing 90 days old."
-				mail.body = "Hello, your IAM Access Keys are nearing 90 days old.\n\n"
-			}
-			mail.body += "Please rotate your access keys. You can use the script located at\n" +
-				rotationScriptURL +
-				"\n\nThank you for doing your part to keep our accounts more secure!\n"
-			if *sendPtr == true {
+		if *sendPtr == true {
+			if hours := diff.Hours(); hours >= 2040 {
+				if hours >= 2160 {
+					mail.subject = "Your IAM Access Keys are at least 90 days old."
+					mail.body = "Hello, your IAM Access Keys are at least 90 days old.\n\n"
+				} else {
+					mail.subject = "Your IAM Access Keys are nearing 90 days old."
+					mail.body = "Hello, your IAM Access Keys are nearing 90 days old.\n\n"
+				}
+				mail.body += "Please rotate your access keys. You can use the script located at\n" +
+					rotationScriptURL +
+					"\n\nThank you for doing your part to keep our accounts more secure!\n"
 				if err := sendSmtpEmail(*smtpServerPtr, *smtpPortPtr, *smtpPassword, mail); err != nil {
 					fmt.Println("Error sending email:", err)
 				} else {
 				  fmt.Println("Success: Sent email to", *rcptPtr)
 				}
-			} else {
-				fmt.Println("No email sent.", *rcptPtr, "access keys were", diff/24, "days old.")
 			}
+		} else {
+			fmt.Println("No email sent.", *userPtr, "IAM Access Keys were", diff.Hours()/24, "days old.")
 		}
 	}
 }
