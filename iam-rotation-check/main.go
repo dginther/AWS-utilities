@@ -112,13 +112,17 @@ func sendSmtpEmail(server string, port string, password string, mail Mail) error
 
 func main() {
 	userPtr := flag.String("user", "", "Username")
-	senderPtr := flag.String("sender", "", "Email From")
-	rcptPtr := flag.String("rcpt", "", "Email Recipient")
-	smtpServerPtr := flag.String("smtpServer", "", "SMTP Server")
-	smtpPortPtr := flag.String("smtpPort", "", "SMTP Port")
+	senderPtr := flag.String("sender", "you@example.com", "Email From")
+	rcptPtr := flag.String("rcpt", "you@example.com", "Email Recipient")
+	smtpServerPtr := flag.String("smtpServer", "smtp.gmail.com", "SMTP Server")
+	smtpPortPtr := flag.String("smtpPort", "587", "SMTP Port")
 	smtpPassword := flag.String("smtpPassword", "", "SMTP Password")
 	flag.Parse()
 
+	var Usage = func() {
+        fmt.Fprintf(CommandLine.Output(), "Usage of %s:\n", os.Args[0])
+        PrintDefaults()
+  }
 	rotationScriptURL := "https://github.com/605data/aws_scripts/blob/master/aws-iam-rotate-keys.sh"
 
 	result, err := getAccessKeys(*userPtr)
