@@ -28,10 +28,13 @@ func (s *SmtpServer) ServerName() string {
 	return (s.host + ":" + s.port)
 }
 
-func getAccessKeys(user string) []*iam.AccessKeyMetadata {
+func getAccessKeys(user string) ([]*iam.AccessKeyMetadata, error) {
 	sess, err := session.NewSession(&aws.Config{
 		Region: aws.String("us-east-1")},
 	)
+	if err != nil {
+		return []*iam.AccessKeyMetadata{}, err
+	}
 
 	svc := iam.New(sess)
 
@@ -39,16 +42,15 @@ func getAccessKeys(user string) []*iam.AccessKeyMetadata {
 		MaxItems: aws.Int64(5),
 		UserName: aws.String(user),
 	})
-
 	if err != nil {
-		return err
+		panic("Unable to get access keys.")
 	}
 
-	return (result.AccessKeyMetadata)
+	return result.AccessKeyMetadata, nil
 }
 
 func checkCreateDate(date time.Time) time.Duration {
-	return (time.Since(date))
+	return time.Since(date)
 }
 
 func (mail *Mail) BuildMessage() string {
@@ -58,10 +60,10 @@ func (mail *Mail) BuildMessage() string {
 	message += fmt.Sprintf("Subject: %s\r\n", mail.subject)
 	message += "\r\n" + mail.body
 
-	return (message)
+	return message
 }
 
-func sendSmtpEmail(server string, port string, password string, mail Mail) string {
+func sendSmtpEmail(server string, port string, password string, mail Mail) error {
 	smtpServer := SmtpServer{host: server, port: port}
 	m := mail
 	messageBody := m.BuildMessage()
@@ -105,7 +107,7 @@ func sendSmtpEmail(server string, port string, password string, mail Mail) strin
 	}
 
 	c.Quit()
-	return ("Success")
+	return nil
 }
 
 func main() {
@@ -119,7 +121,10 @@ func main() {
 
 	rotationScriptURL := "https://github.com/605data/aws_scripts/blob/master/aws-iam-rotate-keys.sh"
 
-	result := getAccessKeys(*userPtr)
+	result, err := getAccessKeys(*userPtr)
+	if err != nil {
+		panic("Unable to get keys.")
+	}
 
 	for date := range result {
 		mail := Mail{}
@@ -140,8 +145,11 @@ func main() {
 			mail.body += "Please rotate your access keys. You can use the script located at\n" +
 				rotationScriptURL +
 				"\n\nThank you for doing your part to keep our accounts more secure!\n"
-			resp := sendSmtpEmail(*smtpServerPtr, *smtpPortPtr, *smtpPassword, mail)
-			fmt.Println(resp)
+			if err := sendSmtpEmail(*smtpServerPtr, *smtpPortPtr, *smtpPassword, mail); err != nil {
+				fmt.Println("Error sending email: ", err)
+			} else {
+			  fmt.Println("Success: Sent email to ", *rcptPtr)
+			}
 		}
 	}
 }
