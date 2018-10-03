@@ -152,6 +152,8 @@ func main() {
 				} else {
 				  fmt.Println("Success: Sent email to", *rcptPtr)
 				}
+			} else {
+				fmt.Println("No email sent.", *userPtr, "IAM Access Keys were", diff.Hours()/24, "days old.")
 			}
 		} else {
 			fmt.Println("No email sent.", *userPtr, "IAM Access Keys were", diff.Hours()/24, "days old.")
