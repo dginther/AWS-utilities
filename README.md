@@ -8,6 +8,7 @@ This script will check a username in your AWS account and email RECIPIENT if it 
 Any SMTP server should work, tested with Gmail and an app password.
 
 usage:
-```iam-rotation-check -user USERNAME -sender you@example.com -rcpt RECIPIENT 
+```
+iam-rotation-check -user USERNAME -sender you@example.com -rcpt RECIPIENT 
                    -smtpServer smtp.gmail.com -smtpPort 587 -smtpPassword PASSWORD
 ```
