@@ -23,4 +23,5 @@ arguments:
 -smtpServer SERVER      SMTP server hostname
 -smtpPort PORT          SMTP port
 -smtpPassword PASSWORD  SMTP password
+-send true/false	Send email? (default: false)
 ```
