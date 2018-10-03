@@ -117,7 +117,7 @@ func main() {
 	smtpServerPtr := flag.String("smtpServer", "smtp.gmail.com", "SMTP Server")
 	smtpPortPtr := flag.String("smtpPort", "587", "SMTP Port")
 	smtpPassword := flag.String("smtpPassword", "", "SMTP Password")
-	sendPtr := flag.Bool("send", true, "Send Email")
+	sendPtr := flag.Bool("send", false, "Send Email")
 	flag.Parse()
 
 	rotationScriptURL := "https://github.com/605data/aws_scripts/blob/master/aws-iam-rotate-keys.sh"
